@@ -1,0 +1,195 @@
+#------------------------------------------------------------------------
+# Makefile for maslov on sgipc
+#------------------------------------------------------------------------
+
+TOPDIR   = /project/FEG_area/
+SRCF77   = $(TOPDIR)/maslov/src_f77/
+ARTLIB   = $(TOPDIR)/maslov/linux/lib/
+OBJDIR   = $(TOPDIR)/maslov/linux/obj/
+
+F77C     = ifort
+OPTFLAGS = -O3
+F77FLAGS = -c -fixed $(OPTFLAGS) 
+LDFLAGS  = (OPTFLAGS) 
+
+OBJ      = $(OBJDIR)/reodor.o    \
+           $(OBJDIR)/felgen.o    \
+           $(OBJDIR)/drhook.o    \
+           $(OBJDIR)/gauss2.o    \
+           $(OBJDIR)/mvoigt.o    \
+           $(OBJDIR)/mhooke.o    \
+           $(OBJDIR)/carpre.o    \
+           $(OBJDIR)/carfun.o    \
+           $(OBJDIR)/cari3d.o    \
+           $(OBJDIR)/jacobi.o    \
+           $(OBJDIR)/shell.o     \
+           $(OBJDIR)/eigsrt.o    \
+           $(OBJDIR)/hill.o      \
+           $(OBJDIR)/bill.o      \
+           $(OBJDIR)/will.o      \
+           $(OBJDIR)/caesar.o    \
+           $(OBJDIR)/brutus.o    \
+           $(OBJDIR)/christ.o    \
+           $(OBJDIR)/mesias.o    \
+           $(OBJDIR)/judas.o     \
+           $(OBJDIR)/gocart.o    \
+           $(OBJDIR)/gocray.o    \
+           $(OBJDIR)/qroots.o    \
+           $(OBJDIR)/invarg.o    \
+           $(OBJDIR)/hymat.o     \
+           $(OBJDIR)/rkck.o      \
+           $(OBJDIR)/rkqs.o      \
+           $(OBJDIR)/rkerr.o     \
+           $(OBJDIR)/kinzro.o    \
+           $(OBJDIR)/kinder.o    \
+           $(OBJDIR)/kinint.o    \
+           $(OBJDIR)/kinrat.o    \
+           $(OBJDIR)/dynzro.o    \
+           $(OBJDIR)/dynder.o    \
+           $(OBJDIR)/dynint.o    \
+           $(OBJDIR)/dynrat.o    \
+           $(OBJDIR)/bfavre.o    \
+           $(OBJDIR)/jelway.o    \
+           $(OBJDIR)/degen.o     \
+           $(OBJDIR)/spline.o    \
+           $(OBJDIR)/splint.o    \
+           $(OBJDIR)/gedert.o    \
+           $(OBJDIR)/gederk.o
+
+#--------------------------------------------------------------
+
+libart_f77.a: $(OBJ)
+	ar scr libart_f77.a $(OBJ)
+	mv libart_f77.a $(ARTLIB)
+
+#--------------------------------------------------------------
+
+$(OBJDIR)/reodor.o:  $(SRCF77)/geo_model/reodor.f
+	$(F77C) $(F77FLAGS) -o $(OBJDIR)/reodor.o $(SRCF77)/geo_model/reodor.f
+
+$(OBJDIR)/felgen.o:  $(SRCF77)/geo_model/felgen.f
+	$(F77C) $(F77FLAGS) -o $(OBJDIR)/felgen.o $(SRCF77)/geo_model/felgen.f
+
+$(OBJDIR)/drhook.o:  $(SRCF77)/geo_model/drhook.f
+	$(F77C) $(F77FLAGS) -o $(OBJDIR)/drhook.o $(SRCF77)/geo_model/drhook.f
+
+$(OBJDIR)/gauss2.o:  $(SRCF77)/geo_model/gauss2.f
+	$(F77C) $(F77FLAGS) -o $(OBJDIR)/gauss2.o $(SRCF77)/geo_model/gauss2.f
+
+$(OBJDIR)/mvoigt.o:  $(SRCF77)/geo_model/mvoigt.f
+	$(F77C) $(F77FLAGS) -o $(OBJDIR)/mvoigt.o $(SRCF77)/geo_model/mvoigt.f
+
+$(OBJDIR)/mhooke.o:  $(SRCF77)/geo_model/mhooke.f
+	$(F77C) $(F77FLAGS) -o $(OBJDIR)/mhooke.o $(SRCF77)/geo_model/mhooke.f
+
+$(OBJDIR)/carpre.o:  $(SRCF77)/interpol/carpre.f
+	$(F77C) $(F77FLAGS) -o $(OBJDIR)/carpre.o $(SRCF77)/interpol/carpre.f
+
+$(OBJDIR)/carfun.o:  $(SRCF77)/interpol/carfun.f
+	$(F77C) $(F77FLAGS) -o $(OBJDIR)/carfun.o $(SRCF77)/interpol/carfun.f
+
+$(OBJDIR)/cari3d.o:  $(SRCF77)/interpol/cari3d.f
+	$(F77C) $(F77FLAGS) -o $(OBJDIR)/cari3d.o $(SRCF77)/interpol/cari3d.f
+
+$(OBJDIR)/jacobi.o:  $(SRCF77)/lego/jacobi.f
+	$(F77C) $(F77FLAGS) -o $(OBJDIR)/jacobi.o $(SRCF77)/lego/jacobi.f
+
+$(OBJDIR)/shell.o:  $(SRCF77)/lego/shell.f
+	$(F77C) $(F77FLAGS) -o $(OBJDIR)/shell.o $(SRCF77)/lego/shell.f
+
+$(OBJDIR)/eigsrt.o:  $(SRCF77)/lego/eigsrt.f
+	$(F77C) $(F77FLAGS) -o $(OBJDIR)/eigsrt.o $(SRCF77)/lego/eigsrt.f
+
+$(OBJDIR)/hill.o:  $(SRCF77)/lego/hill.f
+	$(F77C) $(F77FLAGS) -o $(OBJDIR)/hill.o $(SRCF77)/lego/hill.f
+
+$(OBJDIR)/bill.o:  $(SRCF77)/lego/bill.f
+	$(F77C) $(F77FLAGS) -o $(OBJDIR)/bill.o $(SRCF77)/lego/bill.f
+
+$(OBJDIR)/will.o:  $(SRCF77)/lego/will.f
+	$(F77C) $(F77FLAGS) -o $(OBJDIR)/will.o $(SRCF77)/lego/will.f
+
+$(OBJDIR)/caesar.o:  $(SRCF77)/lego/caesar.f
+	$(F77C) $(F77FLAGS) -o $(OBJDIR)/caesar.o $(SRCF77)/lego/caesar.f
+
+$(OBJDIR)/brutus.o:  $(SRCF77)/lego/brutus.f
+	$(F77C) $(F77FLAGS) -o $(OBJDIR)/brutus.o $(SRCF77)/lego/brutus.f
+
+$(OBJDIR)/christ.o:  $(SRCF77)/lego/christ.f
+	$(F77C) $(F77FLAGS) -o $(OBJDIR)/christ.o $(SRCF77)/lego/christ.f
+
+$(OBJDIR)/mesias.o:  $(SRCF77)/lego/mesias.f
+	$(F77C) $(F77FLAGS) -o $(OBJDIR)/mesias.o $(SRCF77)/lego/mesias.f
+
+$(OBJDIR)/judas.o:  $(SRCF77)/lego/judas.f
+	$(F77C) $(F77FLAGS) -o $(OBJDIR)/judas.o $(SRCF77)/lego/judas.f
+
+$(OBJDIR)/gocart.o:  $(SRCF77)/lego/gocart.f
+	$(F77C) $(F77FLAGS) -o $(OBJDIR)/gocart.o $(SRCF77)/lego/gocart.f
+
+$(OBJDIR)/gocray.o:  $(SRCF77)/lego/gocray.f
+	$(F77C) $(F77FLAGS) -o $(OBJDIR)/gocray.o $(SRCF77)/lego/gocray.f
+
+$(OBJDIR)/qroots.o:  $(SRCF77)/lego/qroots.f
+	$(F77C) $(F77FLAGS) -o $(OBJDIR)/qroots.o $(SRCF77)/lego/qroots.f
+
+$(OBJDIR)/invarg.o:  $(SRCF77)/lego/invarg.f
+	$(F77C) $(F77FLAGS) -o $(OBJDIR)/invarg.o $(SRCF77)/lego/invarg.f
+
+$(OBJDIR)/hymat.o:  $(SRCF77)/lego/hymat.f
+	$(F77C) $(F77FLAGS) -o $(OBJDIR)/hymat.o $(SRCF77)/lego/hymat.f
+
+$(OBJDIR)/rkqs.o:  $(SRCF77)/runge_kutta/rkqs.f
+	$(F77C) $(F77FLAGS) -o $(OBJDIR)/rkqs.o $(SRCF77)/runge_kutta/rkqs.f
+
+$(OBJDIR)/rkck.o:  $(SRCF77)/runge_kutta/rkck.f
+	$(F77C) $(F77FLAGS) -o $(OBJDIR)/rkck.o $(SRCF77)/runge_kutta/rkck.f
+
+$(OBJDIR)/rkerr.o:  $(SRCF77)/runge_kutta/rkerr.f
+	$(F77C) $(F77FLAGS) -o $(OBJDIR)/rkerr.o $(SRCF77)/runge_kutta/rkerr.f
+
+$(OBJDIR)/kinzro.o:  $(SRCF77)/kinetic/kinzro.f
+	$(F77C) $(F77FLAGS) -o $(OBJDIR)/kinzro.o $(SRCF77)/kinetic/kinzro.f
+
+$(OBJDIR)/kinder.o:  $(SRCF77)/kinetic/kinder.f
+	$(F77C) $(F77FLAGS) -o $(OBJDIR)/kinder.o $(SRCF77)/kinetic/kinder.f
+
+$(OBJDIR)/kinint.o:  $(SRCF77)/kinetic/kinint.f
+	$(F77C) $(F77FLAGS) -o $(OBJDIR)/kinint.o $(SRCF77)/kinetic/kinint.f
+
+$(OBJDIR)/kinrat.o:  $(SRCF77)/kinetic/kinrat.f
+	$(F77C) $(F77FLAGS) -o $(OBJDIR)/kinrat.o $(SRCF77)/kinetic/kinrat.f
+
+$(OBJDIR)/dynzro.o:  $(SRCF77)/dynamic/dynzro.f
+	$(F77C) $(F77FLAGS) -o $(OBJDIR)/dynzro.o $(SRCF77)/dynamic/dynzro.f
+
+$(OBJDIR)/dynder.o:  $(SRCF77)/dynamic/dynder.f
+	$(F77C) $(F77FLAGS) -o $(OBJDIR)/dynder.o $(SRCF77)/dynamic/dynder.f
+
+$(OBJDIR)/dynint.o:  $(SRCF77)/dynamic/dynint.f
+	$(F77C) $(F77FLAGS) -o $(OBJDIR)/dynint.o $(SRCF77)/dynamic/dynint.f
+
+$(OBJDIR)/dynrat.o:  $(SRCF77)/dynamic/dynrat.f
+	$(F77C) $(F77FLAGS) -o $(OBJDIR)/dynrat.o $(SRCF77)/dynamic/dynrat.f
+
+$(OBJDIR)/bfavre.o:  $(SRCF77)/geom_spread/bfavre.f
+	$(F77C) $(F77FLAGS) -o $(OBJDIR)/bfavre.o $(SRCF77)/geom_spread/bfavre.f
+
+$(OBJDIR)/jelway.o:  $(SRCF77)/geom_spread/jelway.f
+	$(F77C) $(F77FLAGS) -o $(OBJDIR)/jelway.o $(SRCF77)/geom_spread/jelway.f
+
+$(OBJDIR)/degen.o:  $(SRCF77)/lego/degen.f
+	$(F77C) $(F77FLAGS) -o $(OBJDIR)/degen.o $(SRCF77)/lego/degen.f
+
+$(OBJDIR)/spline.o:  $(SRCF77)/splines/spline.f
+	$(F77C) $(F77FLAGS) -o $(OBJDIR)/spline.o $(SRCF77)/splines/spline.f
+
+$(OBJDIR)/splint.o:  $(SRCF77)/splines/splint.f
+	$(F77C) $(F77FLAGS) -o $(OBJDIR)/splint.o $(SRCF77)/splines/splint.f
+
+$(OBJDIR)/gedert.o:  $(SRCF77)/lego/gedert.f
+	$(F77C) $(F77FLAGS) -o $(OBJDIR)/gedert.o $(SRCF77)/lego/gedert.f
+
+$(OBJDIR)/gederk.o:  $(SRCF77)/lego/gederk.f
+	$(F77C) $(F77FLAGS) -o $(OBJDIR)/gederk.o $(SRCF77)/lego/gederk.f
+

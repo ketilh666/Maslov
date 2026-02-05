@@ -1,0 +1,771 @@
+%!PS-Adobe-3.0
+%%Creator: a2ps version 4.5.29
+%%CreationDate: Wed Jan  5 09:59:31 2000
+%%Pages: (atend)
+%%DocumentFonts: Courier Courier-Oblique Courier-BoldOblique Times-Roman Courier-Bold Helvetica Helvetica-Bold Symbol
+%%EndComments
+% Copyright (c) 1993, 1994, Miguel Santana, M.Santana@frgu.bull.fr
+
+/$a2psdict 100 dict def
+$a2psdict begin
+
+% General macros.
+/xdef {exch def} bind def
+/getfont {exch findfont exch scalefont} bind def
+
+% Set up ISO Latin 1 character encoding
+/reencodeISO {
+	dup dup findfont dup length dict begin
+	{ 1 index /FID ne { def }{ pop pop } ifelse
+	} forall
+	/Encoding ISOLatin1Encoding def
+	currentdict end definefont
+} def
+/Helvetica-Bold reencodeISO def
+/Helvetica reencodeISO def
+/Courier reencodeISO def
+/Courier-Bold reencodeISO def
+/Courier-Oblique reencodeISO def
+/Courier-BoldOblique reencodeISO def
+/Times-Roman reencodeISO def
+
+% Create Courier backspace font
+/backspacefont {
+    /Courier findfont dup length dict begin
+	{ % forall
+	    1 index /FID eq { pop pop } { def } ifelse
+	} forall
+	currentdict /UniqueID known { % if
+	    /UniqueID UniqueID 16#800000 xor def
+	} if
+	CharStrings length 1 add dict begin
+	    CharStrings { def } forall
+	    /backspace { -600 0 0 0 0 0 setcachedevice } bind def
+	    currentdict
+	end
+	/CharStrings exch def
+	/Encoding Encoding 256 array copy def
+	Encoding 8 /backspace put
+	currentdict
+    end
+    definefont pop
+} bind def
+
+% FUNCTIONS
+
+% Function filename: Initialize file printing.
+/fn
+{ /filenm xdef
+  /filenmwidth filenm stringwidth pop def
+  /filenmfont
+       filenmwidth fns gt
+       {
+	       filenmfontname
+	       fnfs fns mul filenmwidth div
+	     getfont
+       }
+       { sfnf }
+     ifelse
+  def
+} bind def
+
+% Function header: prints page header. no page
+% is passed as argument.
+/hp
+  { x sd get  y sd get hs sub 1 add  moveto
+    df setfont
+    gsave
+      x sd get y sd get moveto
+      0 hs 2 div neg rmoveto 
+      hs setlinewidth
+      0.95 setgray
+      pw 0 rlineto stroke
+    grestore
+    gsave
+      dfs hm rmoveto
+      d show				% date/hour
+    grestore
+    gsave
+      pnum cvs pop				% page pop up
+        pw (Page 999) stringwidth pop sub
+        hm
+	  rmoveto
+      (Page ) show pnum show		% page number
+    grestore
+    empty pnum copy pop
+    gsave
+      filenmfont setfont
+         fns filenm stringwidth pop sub 2 div dw add
+          bm 2 mul 
+        add 
+        hm
+      rmoveto
+        filenm show			% file name
+      grestore
+    } bind def
+
+% Function border: prints border page
+/border 
+{ x sd get y sd get moveto
+  gsave				% print four sides
+    0.7 setlinewidth		% of the square
+    pw 0 rlineto
+    0 ph neg rlineto
+    pw neg 0 rlineto
+    closepath stroke
+  grestore
+} bind def
+
+% Function hborder: completes border of the header.
+/hborder 
+{ gsave
+	0.7 setlinewidth
+	0 hs neg rmoveto
+	pw 0 rlineto
+	stroke
+  grestore
+} bind def
+
+% Function sheetnumber: prints the sheet number.
+/sn
+    { snx sny moveto
+      df setfont
+      pnum cvs
+	  dup stringwidth pop (0) stringwidth pop sub neg 0 rmoveto show
+      empty pnum copy pop
+    } bind def
+
+% Function loginprint: prints the login id of the requestor.
+/lgp
+    { lx ly moveto
+      df setfont
+      dup stringwidth pop neg 0 rmoveto show
+    } bind def
+
+% Function current_date: prints the current date.
+/cd
+    { dx dy moveto
+      df setfont
+      (Printed: ) show
+      td show
+    } bind def
+
+% Function filename_footer: prints the file name at bottom of page.
+/fnf
+    { fnx fny moveto
+      df setfont
+      filenm center show
+    } bind def
+
+% Function center: centers text.
+/center
+    { dup stringwidth pop
+      2 div neg 0 rmoveto
+    } bind def
+
+% Function s: print a source line
+/s  { show
+      /y0 y0 bfs sub def
+      x0 y0 moveto
+    } bind def
+
+% Functions b, st, i, bi, t, sy: change to bold, standard, italic, bold-italic, times and symbol fonts
+/b  { show
+      bdf setfont
+    } bind def
+/st { show
+      bf setfont
+    } bind def
+/i  { show
+      itf setfont
+    } bind def
+/bi  { show
+      bif setfont
+    } bind def
+/t  { show
+      tf setfont
+    } bind def
+/sy { show
+      sf setfont
+    } bind def
+
+% Strings used to make easy printing numbers
+/pnum 12 string def
+/empty 12 string def
+
+% Global initializations
+
+/CourierBack backspacefont
+/filenmfontname /Helvetica-Bold def
+/inch {72 mul} bind def
+
+%
+% Meaning of some variables and functions (coded names)
+%
+%	twp:		twinpages?
+%	sd:		sheet side
+%	l:		line counter
+%	c:		column counter
+%	d:		date
+%	td:		current date (for today)
+%	lg:		login name
+%	fn:		filename printing function
+%	sn:		sheetnumber printing function
+%	cd:		current date printing function
+%	fnf:		filename footer printing function
+%	lgp:		login printing function
+%	hp:		header printing function
+%	x, y:		x, y coordinate for the logical page
+%	snx, sny:	x, y coordinate for the sheet number
+%	dx, dy:		x, y coordinate for the date
+%	lx, ly:		x, y coordinate for the login
+%	scx:		x coordinate for the sheet center
+%	fnx, fny:	x, y coordinate for the filename (footer)
+%	fnfs:		filename font size
+%	bfs:		body font size
+%	dfs:		date font size
+%	bfs:		body font size
+%	df:		date font
+%	bf:		body font
+%	bdf:		bold font
+%	itf:		italic font
+%	tf:		times font
+%	sf:		symbol font
+%	sfnf:		standard filename font
+%	dw:		date width
+%	pw:		page width
+%	sw:		sheet width
+%	ph:		page height
+%	sh:		sheet height
+%	hm:		header margin
+%	tm:		top margin
+%	bm:		body margin
+%	rm:		right margin
+%	lm:		left margin
+%	hs:		header size
+%	fns:		filename size
+
+% Initialize page description variables.
+/x0 0 def
+/y0 0 def
+/sh 11.64 inch def
+/sw 8.27 inch def
+/margin 1.4 inch def
+/rm margin 3 div def
+/lm margin 2 mul 3 div def
+/d () def
+/td (Jan  5 2000 09:59) def
+/lg (Printed by Ketil Hokstad from abel) def
+%%EndProlog
+
+/docsave save def
+%%Page: 1 1
+/pagesave save def
+/twp true def
+/fnfs 11 def
+/dfs fnfs 0.8 mul def
+/df /Helvetica dfs getfont def
+/dw df setfont td stringwidth pop def
+/sfnf filenmfontname fnfs getfont def
+/hm fnfs 0.25 mul def
+/hs 0.22 inch def
+/bfs 6.8 def
+/bdf /Courier-Bold bfs getfont def
+/bm bfs 0.7 mul def
+/bf /CourierBack bfs getfont def
+/itf /Courier-Oblique bfs getfont def
+/bif /Courier-BoldOblique bfs getfont def
+/tf /Times-Roman bfs getfont def
+/sf /Symbol bfs getfont def
+/l 69 def
+/c 89 def
+/pw
+   bf setfont (0) stringwidth pop c mul bm dup add add
+   def
+/ph
+   bfs l mul bm dup add add hs add
+   def
+/fns
+      pw
+      fnfs 4 mul dw add (Page 999) stringwidth pop add
+    sub
+  def
+/tm margin twp {3} {2} ifelse div def
+/sd 0 def
+/y [ rm ph add bm add
+          dup ] def
+/sny dfs dfs add def
+/snx sh tm dfs add sub def
+/dy sny def
+/dx tm dfs add def
+/x [ tm			% left page
+          dup 2 mul pw add	% right page
+        ] def
+/scx sh 2 div def
+/fny dy def
+/fnx scx def
+/ly fnfs 2 div y sd get add def
+/lx snx def
+/d (Sep 15 1999 10:22) def
+( interp.f ) fn
+sw 0 translate
+90 rotate
+1 hp
+border
+hborder
+/x0 x 0 get bm add def
+/y0 y 0 get bm bfs add hs add sub def
+x0 y0 moveto
+bf setfont
+( C************************************************************************) s
+( C) s
+( C SUBROUTINE INTERP) s
+( C) s
+( C PURPOSE: Interpolate ray data onto a fixed depth grid:) s
+( C          ray travel time, position, slowness, polarization,) s
+( C          geometrical spreading etc.) s
+( C) s
+( C SUBROUTINES CALLED : SPLINT,SPLINE) s
+( C FUNCTIONS CALLED   : NONE) s
+( C) s
+( C PROGRAMMED         : SVERRE BRANDSBERG-DAHL JANUARY 1999) s
+( C) s
+( C************************************************************************) s
+( ) s
+(       SUBROUTINE INTERP\(KMODE,NTH,NPH,MAXEL,NRAYEL,KINDX,TRAY,XRAY,) s
+(      +                  PRAY,VGRAY,GSRAY,GVRAY,Q2RAY,P2RAY,KMAH\)) s
+( ) s
+( ) s
+(       IMPLICIT NONE) s
+( ) s
+( C---  External variables:) s
+(       INTEGER    KMODE\(3\)) s
+(       INTEGER    NTH,NPH  ) s
+(       INTEGER    MAXEL  ) s
+(       INTEGER    NRAYEL\(NTH,NPH\)          ! Number of rayelements) s
+(       INTEGER    KINDX\(MAXEL,NTH,NPH\)      ! Ray flip-index) s
+(       REAL*8     TRAY \(MAXEL,NTH,NPH\)     ! Ray traveltime) s
+(       REAL*8     XRAY \(3,MAXEL,NTH,NPH\)   ! Ray positions) s
+(       REAL*8     PRAY \(3,MAXEL,NTH,NPH\)   ! Ray slowness) s
+(       REAL*8     VGRAY\(3,MAXEL,NTH,NPH\)   ! Ray group velocity) s
+(       REAL*8     GSRAY\(2,MAXEL,NTH,NPH\)   ! Complex geom spreading) s
+(       REAL*8     GVRAY\(3,3,MAXEL,NTH,NPH\) ! Ray eigenvectors ) s
+(       REAL*8     Q2RAY\(3,2,MAXEL,NTH,NPH\) ! 3x2 matrix Q2x \(Cartesian\)) s
+(       REAL*8     P2RAY\(3,2,MAXEL,NTH,NPH\) ! 3x2 matrix P2x \(Cartesian\)) s
+( ) s
+( C---  External output variables) s
+(       INTEGER    KMAH\(NTH,NPH\)            ! KMAH index array at recording surface) s
+( ) s
+( C---  Internal variables:) s
+(       INTEGER    H,I,J,K,L,M,N,D,J1,J2,JD,IND     ) s
+(       REAL*8     X0,Z0,X1,X2,Z1,Z2,GS,TIME,) s
+(      +           DERIV\(101\),RWRK\(101\)) s
+(       REAL*8     DER1,DER2) s
+(       PARAMETER  \(D=2\)) s
+( ) s
+( C---  DESIRED DEPTH \(MUST CHANGE TO ARRAY TO MANAGE GENERAL RECORDING GEOM.\)) s
+(       Z0 = 650   ! depth of recording surface) s
+( ) s
+( ) s
+( ) s
+( C-----------------------------------------------------------------) s
+( C---  Main loop over takeoff angles) s
+( C-----------------------------------------------------------------) s
+( ) s
+(       DO M=1,NPH) s
+(          DO L=1,NTH) s
+( ) s
+( ) s
+( C---        Find the ray-nodes above and belove Z0) s
+(             J = 2) s
+(             DO K=1,NRAYEL\(L,M\)) s
+(                IF\( XRAY\(3,K,L,M\) .GT. Z0 \) THEN) s
+(                   J = K) s
+(                   GOTO 100) s
+(                ENDIF) s
+(             ENDDO) s
+( ) s
+(  100        CONTINUE) s
+/sd 1 def
+2 hp
+border
+hborder
+/x0 x 1 get bm add def
+/y0 y 1 get bm bfs add hs add sub def
+x0 y0 moveto
+bf setfont
+( ) s
+( ) s
+( C---        Find the travel time that corresponds to this depth level) s
+(             X1 = XRAY\(1,J-1,L,M\)) s
+(             Z1 = XRAY\(3,J-1,L,M\)) s
+(             X2 = XRAY\(1,J  ,L,M\)) s
+(             Z2 = XRAY\(3,J  ,L,M\)) s
+(             X0 = X1 + \(X2-X1\)*\(Z0-Z1\)/\(Z2-Z1\)) s
+(             TIME = TRAY\(J-1,L,M\)+\(\(Z0-Z1\)/\(Z2-Z1\)\)*) s
+(      +             \(TRAY\(J,L,M\)-TRAY\(J-1,L,M\)\) ) s
+(             XRAY\(1,MAXEL,L,M\)  = X0) s
+(             XRAY\(3,MAXEL,L,M\)  = Z0) s
+(             TRAY\(MAXEL,L,M\)    = TIME ) s
+( ) s
+( ) s
+( ) s
+( ) s
+( ) s
+( C**********************************************************************) s
+( C  Interpolate the values we need in the later computations) s
+( C**********************************************************************) s
+( ) s
+( C---        Find the start and end knot for the spline) s
+(             J1 = MAX\(1,J-1-D\)) s
+(             J2 = MIN\(NRAYEL\(L,M\),J+D\)) s
+(             JD = J2-J1) s
+( ) s
+( C----------------------------------------------------------------------) s
+( C  Value 1+2: Ray position and geometrical spreading  ) s
+( C----------------------------------------------------------------------) s
+(             DO N=1,1) s
+( C---           Initialize the work table containing the function values) s
+(                K = J1) s
+(                DO I=1,JD) s
+(                   RWRK\(I\) = GSRAY\(N,K,L,M\)) s
+(                   K = J1+I) s
+(                ENDDO) s
+(                ) s
+( c$$$               DER1 = \(GSRAY\(N,J1+1,L,M\)-GSRAY\(N,J1,L,M\)\)/) s
+( c$$$     +              \(TRAY\(J1+1,L,M\)-TRAY\(J1,L,M\)\)) s
+( c$$$               DER2 = \(GSRAY\(N,J2,L,M\)-GSRAY\(N,J2-1,L,M\)\)/) s
+( c$$$     +              \(TRAY\(J2,L,M\)-TRAY\(J2-1,L,M\)\)) s
+( ) s
+(                DER1 = 0.0) s
+(                DER2 = 0.0) s
+( ) s
+( C---           Interpolate the second derivative and find the intrp value:) s
+(                CALL SPLINE\(TRAY\(J1,L,M\),RWRK,JD,DER1,DER2,DERIV\)) s
+(                CALL SPLINT\(TRAY\(J1,L,M\),RWRK,DERIV,JD,TIME,GS\)) s
+(                GSRAY\(N,MAXEL,L,M\) = GS ) s
+(             ENDDO) s
+( C----------------------------------------------------------------------) s
+( ) s
+( ) s
+( C----------------------------------------------------------------------) s
+( C  Value 3: Ray slowness VERY SMALL NUMBERS,DO WE NEED TO SCALE THEM???) s
+( C----------------------------------------------------------------------) s
+( ) s
+(             DO N=1,3) s
+( C---           Initialize the work table containing the function values) s
+(                K = J1) s
+(                DO I=1,JD) s
+(                   RWRK\(I\) = PRAY\(N,K,L,M\)) s
+(                   K = J1+I) s
+(                ENDDO) s
+(                ) s
+(                DER1 = \(PRAY\(N,J1+1,L,M\)-PRAY\(N,J1,L,M\)\)/) s
+(      +              \(TRAY\(J1+1,L,M\)-TRAY\(J1,L,M\)\)) s
+(                DER2 = \(PRAY\(N,J2,L,M\)-PRAY\(N,J2-1,L,M\)\)/) s
+/sd 0 def
+1 sn
+fnf
+lg lgp
+pagesave restore
+showpage
+%%Page: 2 2
+/pagesave save def
+/twp true def
+/fnfs 11 def
+/dfs fnfs 0.8 mul def
+/df /Helvetica dfs getfont def
+/dw df setfont td stringwidth pop def
+/sfnf filenmfontname fnfs getfont def
+/hm fnfs 0.25 mul def
+/hs 0.22 inch def
+/bfs 6.8 def
+/bdf /Courier-Bold bfs getfont def
+/bm bfs 0.7 mul def
+/bf /CourierBack bfs getfont def
+/itf /Courier-Oblique bfs getfont def
+/bif /Courier-BoldOblique bfs getfont def
+/tf /Times-Roman bfs getfont def
+/sf /Symbol bfs getfont def
+/l 69 def
+/c 89 def
+/pw
+   bf setfont (0) stringwidth pop c mul bm dup add add
+   def
+/ph
+   bfs l mul bm dup add add hs add
+   def
+/fns
+      pw
+      fnfs 4 mul dw add (Page 999) stringwidth pop add
+    sub
+  def
+/tm margin twp {3} {2} ifelse div def
+/sd 0 def
+/y [ rm ph add bm add
+          dup ] def
+/sny dfs dfs add def
+/snx sh tm dfs add sub def
+/dy sny def
+/dx tm dfs add def
+/x [ tm			% left page
+          dup 2 mul pw add	% right page
+        ] def
+/scx sh 2 div def
+/fny dy def
+/fnx scx def
+/ly fnfs 2 div y sd get add def
+/lx snx def
+/d (Sep 15 1999 10:22) def
+( interp.f ) fn
+sw 0 translate
+90 rotate
+3 hp
+border
+hborder
+/x0 x 0 get bm add def
+/y0 y 0 get bm bfs add hs add sub def
+x0 y0 moveto
+bf setfont
+(      +              \(TRAY\(J2,L,M\)-TRAY\(J2-1,L,M\)\)) s
+( ) s
+( C---           Interpolate the second derivative and find the intrp value:) s
+(                CALL SPLINE\(TRAY\(J1,L,M\),RWRK,JD,DER1,DER2,DERIV\)) s
+(                CALL SPLINT\(TRAY\(J1,L,M\),RWRK,DERIV,JD,TIME,GS\)) s
+(                PRAY\(N,MAXEL,L,M\) = GS ) s
+(             ENDDO) s
+( C----------------------------------------------------------------------) s
+( ) s
+( ) s
+( C----------------------------------------------------------------------) s
+( C  Value 4: Group velocity) s
+( C----------------------------------------------------------------------) s
+(             ) s
+(             DO N=1,3) s
+( C---           Initialize the work table containing the function values) s
+(                K = J1) s
+(                DO I=1,JD) s
+(                   RWRK\(I\) = VGRAY\(N,K,L,M\)) s
+(                   K = J1+I) s
+(                ENDDO) s
+(                ) s
+(                DER1 = \(VGRAY\(N,J1+1,L,M\)-VGRAY\(N,J1,L,M\)\)/) s
+(      +              \(TRAY\(J1+1,L,M\)-TRAY\(J1,L,M\)\)) s
+(                DER2 = \(VGRAY\(N,J2,L,M\)-VGRAY\(N,J2-1,L,M\)\)/) s
+(      +              \(TRAY\(J2,L,M\)-TRAY\(J2-1,L,M\)\)) s
+( ) s
+( C---           Interpolate the second derivative and find the intrp value:) s
+(                CALL SPLINE\(TRAY\(J1,L,M\),RWRK,JD,DER1,DER2,DERIV\)) s
+(                CALL SPLINT\(TRAY\(J1,L,M\),RWRK,DERIV,JD,TIME,GS\)) s
+(                VGRAY\(N,MAXEL,L,M\) = GS ) s
+(             ENDDO) s
+( C----------------------------------------------------------------------) s
+( ) s
+( ) s
+( C----------------------------------------------------------------------) s
+( C  Value 5: Matrix Q2   Q2RAY\(3,2,MAXEL,NTH,NPH\)) s
+( C----------------------------------------------------------------------) s
+(             DO H=1,2) s
+(                DO N=1,3) s
+( C---              Initialize the work table containing the function values) s
+(                   K = J1) s
+(                   DO I=1,JD) s
+(                      RWRK\(I\) = Q2RAY\(N,H,K,L,M\)) s
+(                      K = J1+I) s
+(                   ENDDO) s
+(                ) s
+(                   DER1 = \(Q2RAY\(N,H,J1+1,L,M\)-Q2RAY\(N,H,J1,L,M\)\)/) s
+(      +                 \(TRAY\(J1+1,L,M\)-TRAY\(J1,L,M\)\)) s
+(                   DER2 = \(Q2RAY\(N,H,J2,L,M\)-Q2RAY\(N,H,J2-1,L,M\)\)/) s
+(      +                 \(TRAY\(J2,L,M\)-TRAY\(J2-1,L,M\)\)) s
+( ) s
+( C---              Interpolate the second derivative and find the intrp value:) s
+(                   CALL SPLINE\(TRAY\(J1,L,M\),RWRK,JD,DER1,DER2,DERIV\)) s
+(                   CALL SPLINT\(TRAY\(J1,L,M\),RWRK,DERIV,JD,TIME,GS\)) s
+(                   Q2RAY\(N,H,MAXEL,L,M\) = GS ) s
+(                ENDDO) s
+(             ENDDO) s
+( C----------------------------------------------------------------------) s
+( ) s
+( ) s
+( C----------------------------------------------------------------------) s
+( C  Value 6: Matrix P2   P2RAY\(3,2,MAXEL,NTH,NPH\)) s
+( C----------------------------------------------------------------------) s
+(             DO H=1,2) s
+(                DO N=1,3) s
+( C---              Initialize the work table containing the function values) s
+(                   K = J1) s
+(                   DO I=1,JD) s
+/sd 1 def
+4 hp
+border
+hborder
+/x0 x 1 get bm add def
+/y0 y 1 get bm bfs add hs add sub def
+x0 y0 moveto
+bf setfont
+(                      RWRK\(I\) = P2RAY\(N,H,K,L,M\)) s
+(                      K = J1+I) s
+(                   ENDDO) s
+(                ) s
+(                   DER1 = \(P2RAY\(N,H,J1+1,L,M\)-P2RAY\(N,H,J1,L,M\)\)/) s
+(      +                 \(TRAY\(J1+1,L,M\)-TRAY\(J1,L,M\)\)) s
+(                   DER2 = \(P2RAY\(N,H,J2,L,M\)-P2RAY\(N,H,J2-1,L,M\)\)/) s
+(      +                 \(TRAY\(J2,L,M\)-TRAY\(J2-1,L,M\)\)) s
+( ) s
+( C---              Interpolate the second derivative and find the intrp value:) s
+(                   CALL SPLINE\(TRAY\(J1,L,M\),RWRK,JD,DER1,DER2,DERIV\)) s
+(                   CALL SPLINT\(TRAY\(J1,L,M\),RWRK,DERIV,JD,TIME,GS\)) s
+(                   P2RAY\(N,H,MAXEL,L,M\) = GS ) s
+(                ENDDO) s
+(             ENDDO) s
+( C----------------------------------------------------------------------) s
+( ) s
+( ) s
+( C----------------------------------------------------------------------) s
+( C  Value 7: Ray polarization vector) s
+( C----------------------------------------------------------------------) s
+(             H = KMODE\(1\)) s
+(             DO N=1,3) s
+( C---  Initialize the work table containing the function values) s
+(                K = J1) s
+(                DO I=1,JD) s
+(                   RWRK\(I\) = GVRAY\(N,H,K,L,M\)) s
+(                   K = J1+I) s
+(                ENDDO) s
+(                ) s
+(                DER1 = \(GVRAY\(N,H,J1+1,L,M\)-GVRAY\(N,H,J1,L,M\)\)/) s
+(      +              \(TRAY\(J1+1,L,M\)-TRAY\(J1,L,M\)\)) s
+(                DER2 = \(GVRAY\(N,H,J2,L,M\)-GVRAY\(N,H,J2-1,L,M\)\)/) s
+(      +              \(TRAY\(J2,L,M\)-TRAY\(J2-1,L,M\)\)) s
+(                ) s
+( C---  Interpolate the second derivative and find the intrp value:) s
+(                CALL SPLINE\(TRAY\(J1,L,M\),RWRK,JD,DER1,DER2,DERIV\)) s
+(                CALL SPLINT\(TRAY\(J1,L,M\),RWRK,DERIV,JD,TIME,GS\)) s
+(                GVRAY\(N,H,MAXEL,L,M\) = GS ) s
+(             ENDDO) s
+( ) s
+( C----------------------------------------------------------------------) s
+( ) s
+( ) s
+( C----------------------------------------------------------------------) s
+( C  Value 8: KMAH index) s
+( C----------------------------------------------------------------------) s
+( ) s
+( ) s
+(             IND = 0) s
+( ) s
+(             DO I=1,J) s
+(                IND=IND+KINDX\(I,L,M\)) s
+(             ENDDO) s
+(             ) s
+(             KMAH\(L,M\) = INT\(IND\)) s
+( ) s
+( ) s
+( ) s
+(             WRITE\(6,*\) ' INTERP: KMAH = ', KMAH\(L,M\)) s
+( ) s
+( ) s
+( ) s
+( C----------------------------------------------------------------------) s
+( ) s
+(          ENDDO   ! main loop over ray takeoff angles) s
+(       ENDDO      ! main loop over ray takeoff angles) s
+( ) s
+( ) s
+/sd 0 def
+2 sn
+fnf
+lg lgp
+pagesave restore
+showpage
+%%Page: 3 3
+/pagesave save def
+/twp true def
+/fnfs 11 def
+/dfs fnfs 0.8 mul def
+/df /Helvetica dfs getfont def
+/dw df setfont td stringwidth pop def
+/sfnf filenmfontname fnfs getfont def
+/hm fnfs 0.25 mul def
+/hs 0.22 inch def
+/bfs 6.8 def
+/bdf /Courier-Bold bfs getfont def
+/bm bfs 0.7 mul def
+/bf /CourierBack bfs getfont def
+/itf /Courier-Oblique bfs getfont def
+/bif /Courier-BoldOblique bfs getfont def
+/tf /Times-Roman bfs getfont def
+/sf /Symbol bfs getfont def
+/l 69 def
+/c 89 def
+/pw
+   bf setfont (0) stringwidth pop c mul bm dup add add
+   def
+/ph
+   bfs l mul bm dup add add hs add
+   def
+/fns
+      pw
+      fnfs 4 mul dw add (Page 999) stringwidth pop add
+    sub
+  def
+/tm margin twp {3} {2} ifelse div def
+/sd 0 def
+/y [ rm ph add bm add
+          dup ] def
+/sny dfs dfs add def
+/snx sh tm dfs add sub def
+/dy sny def
+/dx tm dfs add def
+/x [ tm			% left page
+          dup 2 mul pw add	% right page
+        ] def
+/scx sh 2 div def
+/fny dy def
+/fnx scx def
+/ly fnfs 2 div y sd get add def
+/lx snx def
+/d (Sep 15 1999 10:22) def
+( interp.f ) fn
+sw 0 translate
+90 rotate
+5 hp
+border
+hborder
+/x0 x 0 get bm add def
+/y0 y 0 get bm bfs add hs add sub def
+x0 y0 moveto
+bf setfont
+( ) s
+(       RETURN) s
+(       END) s
+( C-----------------------------------------------------------------------) s
+( C  END OF SUBROUTINE INTERP) s
+( C-----------------------------------------------------------------------) s
+( ) s
+( ) s
+( ) s
+( ) s
+( ) s
+( ) s
+( ) s
+( ) s
+( ) s
+( ) s
+( ) s
+( ) s
+( ) s
+( ) s
+( ) s
+/sd 1 def
+/sd 0 def
+3 sn
+fnf
+lg lgp
+pagesave restore
+showpage
+
+%%Trailer
+%%Pages: 3
+docsave restore end

@@ -1,0 +1,82 @@
+************************************************************
+* JOBFILE FOR IKU ANISOTROPIC RAY TRACER Version 0.9       *
+************************************************************
+****************************************
+* GENERAL PARAMETERS                   *
+****************************************
+FIRST   SHOT                  (IS_FRST):   1
+LAST    SHOT                  (IS_LAST):   1
+STEP IN SHOT                  (IS_STEP):   1
+****************************************
+* SHOOTING DIRECTIONS                  *
+****************************************
+No of polar angles               (NPOL):   1
+No of azimuth angles             (NAZ2):   1
+Min polar angle (-90,90)        (APOL1):   0.0
+Max polar angle (-90,90)        (APOL2):   0.0
+Min azimuth angle (0,360)       (AAZI1):   0.0
+Max azimut angle (0,360)        (AAZI2):   0.0
+****************************************
+* ADAPTIVE 4TH ORDER RUNGE KUTTA       *
+****************************************
+Max no of ray elements          (MAXEL): 241
+Initial time      (s)              (TO):   0.0
+Max traveltime    (s)              (T1): 240.0
+Initial time step (s)              (H0):   1.0
+Min time step     (s)            (HMIN):   0.1
+Required accuracy               (ACCUR):   0.1
+****************************************
+* RAY TRACING OPTIONS                  *
+****************************************
+Kinetic ray tracing (ON/OFF)           : ON
+Dynamic ray tracing (ON/OFF)           : OFF
+Initial ray direction (UP/DOWN)        : DOWN
+Sol. of Christoffel eq. (FAST/JACOBI)  : JACOBI
+Source positions                (ascii): none
+Receiver positions              (ascii): none
+Ray data   file qS1 (Slow S-wave) (bin): none
+Ray header file qS1 (Slow S-wave) (bin): none
+Ray data   file qS2 (Fast S-wave) (bin): none
+Ray header file qS2 (Fast S-wave) (bin): none
+Ray data   file qP                (bin): ray_data_qP.dir
+Ray header file qP                (bin): ray_head_qP.dir
+****************************************
+* GRIDDED GEOLOGICAL MODEL             :
+****************************************
+Anis. symmetry (TIV/TIH/TIG/ORV/ORG)   : ISO          
+Model parameterization (THOMSEN/VOIGT) : THOMSEN          
+X-size of global  grid on disk     (NX): 182
+Y-size of global  grid on disk     (NY): 258
+Z-size of global  grid on disk     (NZ): 61
+X-sampl. of 2D/3D grid on disk (m) (DX): 200.0
+Y-sampl. of 2D/3D grid on disk (m) (DY): 200.0
+Z-sampl. of 2D/3D grid on disk (m) (DZ): 200.0
+Order of interpol. polynomial   (NPOLY):   3
+2D/3D Density      grid file      (bin): none
+2D/3D VP0          grid file      (bin): kHeat_zxy_Dec2.dir
+2D/3D VS0          grid file      (bin): none
+2D/3D Delta        grid file      (bin): none
+2D/3D Epsilon      grid file      (bin): none
+2D/3D Gamma        grid file      (bin): none
+Symmetry axis polar   angle grid  (bin): none
+Symmetry axis azimuth angle grid  (bin): none
+****************************************
+* LOGFILE AND SCRATCH DIRECTORIES      *
+****************************************
+Joblog                          (ascii): mon_joblog.txt
+Error messages                  (ascii): mon_errmsg.txt
+Scratch/Work directory 1      (WRKDIR1): /not_used
+Scratch/Work directory 2      (WRKDIR2): /not_used
+****************************************
+* FILE FORMATS OF BIN/ASCII FILES      *
+****************************************
+Image cube      file    (iku/hyb/2d/3d): iku3d
+Source header   file    (iku/hyb/2d/3d): iku3d
+Geo model grid  files         (dir/seq): dir
+Ray data output files         (dir/seq): dir
+************************************************************
+*                   END OF JOB FILE                        *
+************************************************************
+
+
+

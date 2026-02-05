@@ -1,0 +1,105 @@
+!*********************************************************************         
+!
+!  IKU Seismic subroutine alloc_geo_mod
+!
+!  Purpose : Allocate memeory for elastic model on a regular grid.
+!
+!  Programmed  :   Ketil Hokstad November 1999 
+!
+!**********************************************************************
+    
+subroutine alloc_geo_mod(gmod,nx,ny,nz,nelk,stat)
+
+   implicit none
+
+   !--- External variables: 
+   type(art_geo_mod),intent(inout) :: gmod     ! Elastic model
+   integer          ,optional      :: nx,ny,nz ! Model size
+   integer          ,optional      :: nelk     ! No of elastic coeff.
+   integer          ,optional      :: stat     ! Status variable
+
+   !--- Internal variables:  
+   integer        ::  ls
+   integer        ::  mx,my,mz,melk
+
+   !----------------------------------------------------------
+   !   Check for optional parameters
+   !----------------------------------------------------------
+
+   if (present(nelk)) then
+      melk         = nelk
+      gmod%nelk    = nelk
+   else
+      melk         = gmod%nelk
+   end if
+
+   if (present(nx)) then
+      mx         = nx
+      gmod%nx    = nx
+   else
+      mx         = gmod%nx
+   end if
+
+   if (present(ny)) then
+      my         = ny
+      gmod%ny    = ny
+   else
+      my         = gmod%ny
+   end if
+
+   if (present(nz)) then
+      mz         = nz
+      gmod%nz    = nz
+   else
+      mz         = gmod%nz
+   end if
+
+   !---------------------------------------------------------
+   !   Allocate memeory to pointers in type art_geo_mod
+   !---------------------------------------------------------
+
+   allocate ( gmod%elk(1:mx,1:my,1:mz,1:melk), &
+              gmod%rho(1:mx,1:my,1:mz       ), stat=ls )
+
+   if(present(stat)) stat=ls
+
+!-----------------------------------------------------------------------
+end subroutine alloc_geo_mod
+!-----------------------------------------------------------------------
+
+!*********************************************************************         
+!
+!  IKU Seismic subroutine dealloc_geo_mod
+!
+!
+!  Purpose : Deallocate memeory for elastic model on a regular grid.
+!
+!  Programmed  :   Ketil Hokstad November 1999 
+!
+!**********************************************************************
+    
+subroutine dealloc_geo_mod(gmod,stat)
+
+   implicit none
+
+   !--- External variables: 
+   type(art_geo_mod),intent(inout) :: gmod     ! Elastic model
+   integer          ,optional      :: stat     ! Status variable
+
+   !--- Internal variables:  
+   integer        ::  ls
+
+   !---------------------------------------------------------
+   !  Deallocate memeory to pointers in type art_geo_mod
+   !---------------------------------------------------------
+
+   deallocate ( gmod%elk, &
+                gmod%rho, stat=ls )
+
+   if(present(stat)) stat=ls
+
+!-----------------------------------------------------------------------
+end subroutine dealloc_geo_mod
+!-----------------------------------------------------------------------
+
+

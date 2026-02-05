@@ -1,0 +1,15 @@
+Subroutines to keep an eye on:
+
+Job setup/adjustment (hardcoded):
+
+	maslov/src_f90/art_ray_tracer_1st/ray_tracer.f90
+
+	Line 219 (old)
+	Line 285
+
+Output:  (hardcoded)
+
+	maslov/src_f90/art_ray_tracer_1st/write_debug.f90
+
+	Line 302
+
